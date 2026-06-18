@@ -31,8 +31,14 @@
   cursor: default;
 }
 
+
 .spin {
   animation: spin 0.8s linear infinite;
+}
+.suggest-trigger.partner-mode {
+  border-color: var(--accent);
+  color: var(--accent-bright);
+  background: var(--accent-dim);
 }
 
 @keyframes spin {

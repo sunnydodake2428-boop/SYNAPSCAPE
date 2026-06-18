@@ -12,6 +12,14 @@
   border-bottom: 1px solid var(--border);
 }
 
+.top-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 .brand {
   display: flex;
   align-items: center;

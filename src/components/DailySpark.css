@@ -1,0 +1,29 @@
+.daily-spark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  width: fit-content;
+}
+
+.daily-spark:hover {
+  border-color: var(--accent);
+}
+
+.spark-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+}
+
+.spark-pair {
+  font-weight: 600;
+  color: var(--text-primary);
+}

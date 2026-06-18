@@ -6,7 +6,8 @@ import IdeaCard from "./components/IdeaCard";
 import Vault from "./components/Vault";
 import KeywordSuggester from "./components/KeywordSuggester";
 import UsageBadge from "./components/UsageBadge";
-import { fuseIdeas, suggestKeywords, remixKeyword, runGauntlet } from "./lib/groqClient";
+import DailySpark from "./components/DailySpark";
+import { fuseIdeas, suggestKeywords, suggestPartnerKeywords, remixKeyword, runGauntlet } from "./lib/groqClient";
 import { getVault, saveToVault, removeFromVault } from "./lib/vault";
 import "./App.css";
 
@@ -57,11 +58,24 @@ export default function App() {
     }
   }
 
-  async function handleRequestKeywords() {
+  async function handleRequestInitial() {
     setKeywordsLoading(true);
     try {
-      const seed = wordA.trim() || wordB.trim() || null;
-      const { suggestions, remaining: rem } = await suggestKeywords(seed, usedKeywords);
+      const { suggestions, remaining: rem } = await suggestKeywords(usedKeywords);
+      setKeywordSuggestions(suggestions);
+      setUsedKeywords((prev) => [...prev, ...suggestions.map((s) => s.word)]);
+      setRemaining(rem);
+    } catch (err) {
+      handleApiError(err);
+    } finally {
+      setKeywordsLoading(false);
+    }
+  }
+
+  async function handleRequestPartner(seedWord) {
+    setKeywordsLoading(true);
+    try {
+      const { suggestions, remaining: rem } = await suggestPartnerKeywords(seedWord, usedKeywords);
       setKeywordSuggestions(suggestions);
       setUsedKeywords((prev) => [...prev, ...suggestions.map((s) => s.word)]);
       setRemaining(rem);
@@ -73,8 +87,19 @@ export default function App() {
   }
 
   function handlePickKeyword(word) {
-    if (!wordA.trim()) setWordA(word);
-    else setWordB(word);
+    if (!wordA.trim()) {
+      setWordA(word);
+      setKeywordSuggestions([]);
+    } else {
+      setWordB(word);
+      setKeywordSuggestions([]);
+    }
+  }
+
+  function handleUseSpark(a, b) {
+    setWordA(a);
+    setWordB(b);
+    setKeywordSuggestions([]);
   }
 
   async function handleRemix(idea, side) {
@@ -148,7 +173,10 @@ export default function App() {
               <p>Two concepts go in. The engine generates multiple fusions internally, rejects the weak ones, and shows you only the strongest — then you can put it through the Gauntlet before you trust it.</p>
             </div>
 
-            <UsageBadge remaining={remaining} />
+            <div className="top-row">
+              <UsageBadge remaining={remaining} />
+              <DailySpark onUse={handleUseSpark} />
+            </div>
 
             <FusionInput
               wordA={wordA}
@@ -163,8 +191,11 @@ export default function App() {
             <KeywordSuggester
               suggestions={keywordSuggestions}
               isLoading={keywordsLoading}
-              onRequestSuggestions={handleRequestKeywords}
+              onRequestInitial={handleRequestInitial}
+              onRequestPartner={handleRequestPartner}
               onPick={handlePickKeyword}
+              wordA={wordA}
+              wordB={wordB}
             />
 
             <div className="card-stage">

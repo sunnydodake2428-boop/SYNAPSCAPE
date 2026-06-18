@@ -56,9 +56,19 @@ export async function runGauntlet(idea) {
   };
 }
 
-export async function suggestKeywords(seedWord = null, usedWords = []) {
-  const result = await callApi("keywords", { seedWord, usedWords });
+export async function suggestKeywords(usedWords = []) {
+  const result = await callApi("keywords", { mode: "initial", usedWords });
   return { suggestions: result.suggestions ?? [], remaining: result.remaining };
+}
+
+export async function suggestPartnerKeywords(seedWord, usedWords = []) {
+  const result = await callApi("keywords", { mode: "partner", seedWord, usedWords });
+  return { suggestions: result.suggestions ?? [], remaining: result.remaining };
+}
+
+export async function getDailySpark() {
+  const result = await callApi("keywords", { mode: "spark" });
+  return result.spark;
 }
 
 export async function remixKeyword(fixedWord, replacingWord) {
