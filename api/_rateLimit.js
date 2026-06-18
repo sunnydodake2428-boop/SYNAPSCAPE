@@ -1,6 +1,6 @@
 // /api/_rateLimit.js — shared helper, not a route itself (underscore prefix = Vercel ignores it as an endpoint)
 
-const DAILY_LIMIT = 8;
+const DAILY_LIMIT = 5;
 
 export async function checkRateLimit(req) {
   const url = process.env.KV_REST_API_URL;

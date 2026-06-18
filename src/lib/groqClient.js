@@ -1,6 +1,3 @@
-// All Groq calls now go through our own /api/* serverless functions.
-// No API key is ever stored or sent from the browser.
-
 async function callApi(endpoint, body) {
   const res = await fetch(`/api/${endpoint}`, {
     method: "POST",
@@ -9,7 +6,9 @@ async function callApi(endpoint, body) {
   });
 
   if (res.status === 429) {
-    throw new Error("DAILY_LIMIT_REACHED");
+    const err = new Error("DAILY_LIMIT_REACHED");
+    err.remaining = 0;
+    throw err;
   }
   if (!res.ok) {
     throw new Error("SERVER_ERROR");
@@ -21,42 +20,48 @@ async function callApi(endpoint, body) {
 export async function fuseIdeas(wordA, wordB, lineage = {}) {
   const result = await callApi("fuse", { wordA, wordB });
   return {
-    id: crypto.randomUUID(),
-    wordA,
-    wordB,
-    title: result.title,
-    tagline: result.tagline,
-    description: result.description,
-    feasibility: result.feasibility,
-    impact: result.impact,
-    novelty: result.novelty,
-    prototypeSteps: result.prototypeSteps,
-    tags: result.tags,
-    rejectedAngles: result.rejectedAngles,
-    createdAt: Date.now(),
-    parentId: lineage.parentId ?? null,
-    generation: lineage.generation ?? 0,
-    gauntlet: null,
+    idea: {
+      id: crypto.randomUUID(),
+      wordA,
+      wordB,
+      title: result.title,
+      tagline: result.tagline,
+      description: result.description,
+      feasibility: result.feasibility,
+      impact: result.impact,
+      novelty: result.novelty,
+      prototypeSteps: result.prototypeSteps,
+      tags: result.tags,
+      rejectedAngles: result.rejectedAngles,
+      createdAt: Date.now(),
+      parentId: lineage.parentId ?? null,
+      generation: lineage.generation ?? 0,
+      gauntlet: null,
+    },
+    remaining: result.remaining,
   };
 }
 
 export async function runGauntlet(idea) {
   const result = await callApi("gauntlet", { idea });
   return {
-    skepticAttack: result.skepticAttack,
-    builderResponse: result.builderResponse,
-    verdict: result.verdict,
-    verdictReason: result.verdictReason,
-    confidence: result.confidence,
+    gauntlet: {
+      skepticAttack: result.skepticAttack,
+      builderResponse: result.builderResponse,
+      verdict: result.verdict,
+      verdictReason: result.verdictReason,
+      confidence: result.confidence,
+    },
+    remaining: result.remaining,
   };
 }
 
 export async function suggestKeywords(seedWord = null, usedWords = []) {
   const result = await callApi("keywords", { seedWord, usedWords });
-  return result.suggestions ?? [];
+  return { suggestions: result.suggestions ?? [], remaining: result.remaining };
 }
 
 export async function remixKeyword(fixedWord, replacingWord) {
   const result = await callApi("remix", { fixedWord, replacingWord });
-  return result.word;
+  return { word: result.word, remaining: result.remaining };
 }

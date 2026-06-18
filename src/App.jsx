@@ -5,6 +5,7 @@ import FusionInput from "./components/FusionInput";
 import IdeaCard from "./components/IdeaCard";
 import Vault from "./components/Vault";
 import KeywordSuggester from "./components/KeywordSuggester";
+import UsageBadge from "./components/UsageBadge";
 import { fuseIdeas, suggestKeywords, remixKeyword, runGauntlet } from "./lib/groqClient";
 import { getVault, saveToVault, removeFromVault } from "./lib/vault";
 import "./App.css";
@@ -23,6 +24,7 @@ export default function App() {
   const [usedKeywords, setUsedKeywords] = useState([]);
   const [gauntletResult, setGauntletResult] = useState(null);
   const [gauntletLoading, setGauntletLoading] = useState(false);
+  const [remaining, setRemaining] = useState(null);
 
   useEffect(() => {
     setVaultState(getVault());
@@ -30,6 +32,7 @@ export default function App() {
 
   function handleApiError(err) {
     if (err.message === "DAILY_LIMIT_REACHED") {
+      setRemaining(0);
       setError("You've hit today's free limit — come back tomorrow for more fusions.");
     } else {
       setError("Something went wrong. Try again.");
@@ -43,8 +46,9 @@ export default function App() {
     setGauntletResult(null);
 
     try {
-      const idea = await fuseIdeas(a, b, lineage);
+      const { idea, remaining: rem } = await fuseIdeas(a, b, lineage);
       setCurrentIdea(idea);
+      setRemaining(rem);
     } catch (err) {
       handleApiError(err);
     } finally {
@@ -57,9 +61,10 @@ export default function App() {
     setKeywordsLoading(true);
     try {
       const seed = wordA.trim() || wordB.trim() || null;
-      const suggestions = await suggestKeywords(seed, usedKeywords);
+      const { suggestions, remaining: rem } = await suggestKeywords(seed, usedKeywords);
       setKeywordSuggestions(suggestions);
       setUsedKeywords((prev) => [...prev, ...suggestions.map((s) => s.word)]);
+      setRemaining(rem);
     } catch (err) {
       handleApiError(err);
     } finally {
@@ -78,7 +83,8 @@ export default function App() {
     try {
       const fixed = side === "A" ? idea.wordA : idea.wordB;
       const replacing = side === "A" ? idea.wordB : idea.wordA;
-      const newWord = await remixKeyword(fixed, replacing);
+      const { word: newWord, remaining: rem } = await remixKeyword(fixed, replacing);
+      setRemaining(rem);
 
       const nextA = side === "A" ? fixed : newWord;
       const nextB = side === "A" ? newWord : fixed;
@@ -95,8 +101,9 @@ export default function App() {
   async function handleRunGauntlet(idea) {
     setGauntletLoading(true);
     try {
-      const result = await runGauntlet(idea);
-      setGauntletResult(result);
+      const { gauntlet, remaining: rem } = await runGauntlet(idea);
+      setGauntletResult(gauntlet);
+      setRemaining(rem);
     } catch (err) {
       handleApiError(err);
     } finally {
@@ -140,6 +147,8 @@ export default function App() {
               <h1>Collide two ideas. See what survives.</h1>
               <p>Two concepts go in. The engine generates multiple fusions internally, rejects the weak ones, and shows you only the strongest — then you can put it through the Gauntlet before you trust it.</p>
             </div>
+
+            <UsageBadge remaining={remaining} />
 
             <FusionInput
               wordA={wordA}

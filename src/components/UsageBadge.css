@@ -1,0 +1,23 @@
+.usage-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-tertiary);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: 14px;
+  width: fit-content;
+}
+
+.usage-badge.low {
+  color: var(--cyan);
+  border-color: var(--cyan);
+}
+
+.usage-badge.out {
+  color: var(--danger);
+  border-color: var(--danger);
+}
