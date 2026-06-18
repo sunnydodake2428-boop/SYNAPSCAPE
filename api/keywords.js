@@ -1,4 +1,4 @@
-import { checkRateLimit, safeParse } from "./_rateLimit.js";
+import { checkKeywordLimit, safeParse } from "./_rateLimit.js";
 
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const MODEL = "llama-3.3-70b-versatile";
@@ -61,7 +61,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ spark: getDailySpark() });
   }
 
-  const rateLimitResult = await checkRateLimit(req);
+  const rateLimitResult = await checkKeywordLimit(req);
   if (!rateLimitResult.allowed) {
     return res.status(429).json({ error: "DAILY_LIMIT_REACHED", remaining: 0 });
   }

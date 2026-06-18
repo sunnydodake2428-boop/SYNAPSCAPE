@@ -64,7 +64,7 @@ export default function App() {
       const { suggestions, remaining: rem } = await suggestKeywords(usedKeywords);
       setKeywordSuggestions(suggestions);
       setUsedKeywords((prev) => [...prev, ...suggestions.map((s) => s.word)]);
-      setRemaining(rem);
+      
     } catch (err) {
       handleApiError(err);
     } finally {
@@ -78,7 +78,7 @@ export default function App() {
       const { suggestions, remaining: rem } = await suggestPartnerKeywords(seedWord, usedKeywords);
       setKeywordSuggestions(suggestions);
       setUsedKeywords((prev) => [...prev, ...suggestions.map((s) => s.word)]);
-      setRemaining(rem);
+      
     } catch (err) {
       handleApiError(err);
     } finally {
