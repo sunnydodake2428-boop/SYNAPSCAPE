@@ -1,7 +1,7 @@
 import { Zap } from "lucide-react";
 import "./UsageBadge.css";
 
-const DAILY_LIMIT = 8;
+const DAILY_LIMIT = 5;
 
 export default function UsageBadge({ remaining }) {
   if (remaining === null) return null;
