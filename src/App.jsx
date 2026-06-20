@@ -224,24 +224,23 @@ if (session === undefined) {
           <span>SynapseScape</span>
           
         </div>
-        <nav className="app-nav">
+
+        
+<nav className="app-nav">
   <button className={view === "fuse" ? "active" : ""} onClick={() => setView("fuse")}>Fuse</button>
   <button className={view === "vault" ? "active" : ""} onClick={() => setView("vault")}>
     <Archive size={14} /> Vault {vault.length > 0 && <span className="vault-count">{vault.length}</span>}
   </button>
   <button className="theme-toggle" onClick={handleToggleTheme} title="Toggle theme">
-  {theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
-</button>
-
+    {theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
+  </button>
+  <button className="settings-btn" onClick={handleOpenHistory} title="History">
+    <History size={16} />
+  </button>
   <button className="settings-btn" onClick={() => setShowSettings(true)} title="Settings">
-  <Settings size={14} />
-</button>
-<button className="settings-btn" onClick={handleOpenHistory} title="History">
-  <History size={16} />
-</button>
-
+    <Settings size={14} />
+  </button>
 </nav>
-
 
 
       </header>
