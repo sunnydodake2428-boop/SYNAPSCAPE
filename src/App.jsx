@@ -59,8 +59,10 @@ function handleToggleTheme() {
 function handleLogout() { supabase.auth.signOut(); }
 
   useEffect(() => {
-    setVaultState(getVault());
-  }, []);
+    if (session) {
+      getVault().then(setVaultState);
+    }
+  }, [session]);
 
   function handleApiError(err) {
     if (err.message === "DAILY_LIMIT_REACHED") {
@@ -167,9 +169,10 @@ function handleLogout() { supabase.auth.signOut(); }
     }
   }
 
-  function handleSave(idea) {
+  async function handleSave(idea) {
     const ideaWithGauntlet = gauntletResult ? { ...idea, gauntlet: gauntletResult } : idea;
-    setVaultState(saveToVault(ideaWithGauntlet));
+    const updated = await saveToVault(ideaWithGauntlet);
+    setVaultState(updated);
     setCurrentIdea(null);
     setGauntletResult(null);
   }
@@ -179,7 +182,10 @@ function handleLogout() { supabase.auth.signOut(); }
     setGauntletResult(null);
   }
 
-  function handleRemove(id) { setVaultState(removeFromVault(id)); }
+  async function handleRemove(id) {
+    const updated = await removeFromVault(id);
+    setVaultState(updated);
+  }
 if (session === undefined) {
     return <div className="app-loading" />;
   }
