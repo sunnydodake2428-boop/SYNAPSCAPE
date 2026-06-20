@@ -162,3 +162,10 @@
     font-size: 26px;
   }
 }
+.theme-toggle {
+  padding: 8px !important;
+  color: var(--text-tertiary);
+}
+.theme-toggle:hover {
+  color: var(--accent-bright) !important;
+}

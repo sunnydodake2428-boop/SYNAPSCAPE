@@ -71,3 +71,20 @@ input {
     transition-duration: 0.01ms !important;
   }
 }
+:root[data-theme="light"] {
+  --bg: #F7F7FA;
+  --surface: #FFFFFF;
+  --surface-raised: #F0F1F5;
+  --border: #E2E4EA;
+  --border-bright: #D1D4DC;
+  --text-primary: #14161A;
+  --text-secondary: #565B66;
+  --text-tertiary: #8A8F99;
+  --accent: #7C5CFF;
+  --accent-bright: #6B46E5;
+  --accent-dim: rgba(124, 92, 255, 0.08);
+  --cyan: #0E9CB0;
+  --cyan-dim: rgba(14, 156, 176, 0.08);
+  --danger: #E0444A;
+  --success: #1E9E5A;
+}

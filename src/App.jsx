@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
-
+import { Sun, Moon } from "lucide-react";
+import { applyStoredTheme, setTheme } from "./lib/theme";
 import FusionInput from "./components/FusionInput";
 import IdeaCard from "./components/IdeaCard";
 import Vault from "./components/Vault";
@@ -18,6 +19,8 @@ import { supabase } from "./lib/supabaseClient";
 
 
 export default function App() {
+
+  const [theme, setThemeState] = useState("dark");
   const [session, setSession] = useState(undefined);
   const [view, setView] = useState("fuse");
   const [wordA, setWordA] = useState("");
@@ -42,6 +45,16 @@ export default function App() {
   });
   return () => listener.subscription.unsubscribe();
 }, []);
+
+useEffect(() => {
+  setThemeState(applyStoredTheme());
+}, []);
+
+function handleToggleTheme() {
+  const next = theme === "dark" ? "light" : "dark";
+  setTheme(next);
+  setThemeState(next);
+}
 
 function handleLogout() { supabase.auth.signOut(); }
 
@@ -188,6 +201,10 @@ if (session === undefined) {
   <button className={view === "vault" ? "active" : ""} onClick={() => setView("vault")}>
     <Archive size={14} /> Vault {vault.length > 0 && <span className="vault-count">{vault.length}</span>}
   </button>
+  <button className="theme-toggle" onClick={handleToggleTheme} title="Toggle theme">
+  {theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
+</button>
+
   <button className="settings-btn" onClick={() => setShowSettings(true)} title="Settings">
   <Settings size={14} />
 </button>
