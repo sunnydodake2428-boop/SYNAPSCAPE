@@ -11,6 +11,12 @@
   box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.6);
 }
 
+.action-btn.share {
+  color: var(--accent-bright);
+}
+.action-btn.share:hover {
+  border-color: var(--accent);
+}
 .idea-card:active {
   cursor: grabbing;
 }

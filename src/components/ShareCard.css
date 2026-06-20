@@ -1,0 +1,108 @@
+.share-card {
+  width: 1080px;
+  padding: 80px;
+  background: linear-gradient(160deg, #0A0B0D 0%, #14101F 100%);
+  font-family: 'Inter', sans-serif;
+  color: #EDEEF2;
+  box-sizing: border-box;
+}
+
+.share-card-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 60px;
+}
+
+.share-brand-mark {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: #7C5CFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 28px;
+  color: #fff;
+}
+
+.share-card-brand span {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+}
+
+.share-pair {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 22px;
+  color: #8B92A5;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.share-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0 0 24px;
+}
+
+.share-tagline {
+  font-size: 28px;
+  color: #9B82FF;
+  font-weight: 500;
+  line-height: 1.5;
+  margin: 0 0 56px;
+}
+
+.share-metrics {
+  display: flex;
+  gap: 60px;
+  padding: 40px 0;
+  border-top: 1px solid #2A2F38;
+  border-bottom: 1px solid #2A2F38;
+  margin-bottom: 40px;
+}
+
+.share-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.share-ring-value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 48px;
+  font-weight: 700;
+}
+
+.share-ring-label {
+  font-size: 18px;
+  color: #5A6072;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.share-verdict {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--vc);
+  border: 2px solid var(--vc);
+  padding: 14px 24px;
+  border-radius: 12px;
+  margin-bottom: 50px;
+}
+
+.share-footer {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  color: #5A6072;
+}

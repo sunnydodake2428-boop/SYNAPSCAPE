@@ -2,6 +2,29 @@ import { motion, useMotionValue, useTransform } from "framer-motion";
 import { Check, X, Lightbulb, RefreshCw } from "lucide-react";
 import Gauntlet from "./Gauntlet";
 import "./IdeaCard.css";
+import { useRef } from "react";
+import ShareCard from "./ShareCard";
+import { shareIdeaAsImage } from "../lib/shareImage";
+import { useState } from "react";
+
+
+
+
+
+const shareCardRef = useRef(null);
+const [sharing, setSharing] = useState(false);
+
+async function handleShare() {
+  setSharing(true);
+  try {
+    await shareIdeaAsImage(shareCardRef.current, idea);
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setSharing(false);
+  }
+}
+
 
 export default function IdeaCard({ idea, onSave, onDiscard, onRemix, isRemixing, onRunGauntlet, gauntletResult, gauntletLoading }) {
   const x = useMotionValue(0);
@@ -100,10 +123,18 @@ export default function IdeaCard({ idea, onSave, onDiscard, onRemix, isRemixing,
         <button className="action-btn discard" onClick={() => onDiscard(idea)}>
           <X size={18} />
         </button>
+          <button className="action-btn share" onClick={handleShare} disabled={sharing} title="Share as image">
+    <Share2 size={18} />
+  </button>
+
         <button className="action-btn save" onClick={() => onSave(idea)}>
           <Check size={18} />
         </button>
       </div>
+      <div style={{ position: "fixed", top: -9999, left: -9999, pointerEvents: "none" }}>
+        <ShareCard ref={shareCardRef} idea={idea} />
+      </div>
+      
     </motion.div>
   );
 }
