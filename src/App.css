@@ -12,6 +12,18 @@
   border-bottom: 1px solid var(--border);
 }
 
+.app-loading {
+  min-height: 100vh;
+  background: var(--bg);
+}
+.settings-btn {
+  padding: 8px !important;
+  color: var(--text-tertiary);
+}
+.settings-btn:hover {
+  color: var(--accent-bright) !important;
+}
+
 .top-row {
   display: flex;
   align-items: center;

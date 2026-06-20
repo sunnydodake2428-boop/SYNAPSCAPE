@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
-import { Sparkles, Archive } from "lucide-react";
+
 import FusionInput from "./components/FusionInput";
 import IdeaCard from "./components/IdeaCard";
 import Vault from "./components/Vault";
@@ -10,8 +10,15 @@ import DailySpark from "./components/DailySpark";
 import { fuseIdeas, suggestKeywords, suggestPartnerKeywords, remixKeyword, runGauntlet } from "./lib/groqClient";
 import { getVault, saveToVault, removeFromVault } from "./lib/vault";
 import "./App.css";
+import SettingsModal from "./components/SettingsModal";
+import { Sparkles, Archive, Settings } from "lucide-react";
+import Login from "./components/Login";
+import { supabase } from "./lib/supabaseClient";
+
+
 
 export default function App() {
+  const [session, setSession] = useState(undefined);
   const [view, setView] = useState("fuse");
   const [wordA, setWordA] = useState("");
   const [wordB, setWordB] = useState("");
@@ -26,6 +33,17 @@ export default function App() {
   const [gauntletResult, setGauntletResult] = useState(null);
   const [gauntletLoading, setGauntletLoading] = useState(false);
   const [remaining, setRemaining] = useState(null);
+  const [showSettings, setShowSettings] = useState(false);
+
+  useEffect(() => {
+  supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
+  const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+    setSession(session);
+  });
+  return () => listener.subscription.unsubscribe();
+}, []);
+
+function handleLogout() { supabase.auth.signOut(); }
 
   useEffect(() => {
     setVaultState(getVault());
@@ -149,6 +167,13 @@ export default function App() {
   }
 
   function handleRemove(id) { setVaultState(removeFromVault(id)); }
+if (session === undefined) {
+    return <div className="app-loading" />;
+  }
+
+  if (session === null) {
+    return <Login />;
+  }
 
   return (
     <div className="app">
@@ -156,13 +181,17 @@ export default function App() {
         <div className="brand">
           <div className="brand-mark"><Sparkles size={16} /></div>
           <span>SynapseScape</span>
+          
         </div>
         <nav className="app-nav">
-          <button className={view === "fuse" ? "active" : ""} onClick={() => setView("fuse")}>Fuse</button>
-          <button className={view === "vault" ? "active" : ""} onClick={() => setView("vault")}>
-            <Archive size={14} /> Vault {vault.length > 0 && <span className="vault-count">{vault.length}</span>}
-          </button>
-        </nav>
+  <button className={view === "fuse" ? "active" : ""} onClick={() => setView("fuse")}>Fuse</button>
+  <button className={view === "vault" ? "active" : ""} onClick={() => setView("vault")}>
+    <Archive size={14} /> Vault {vault.length > 0 && <span className="vault-count">{vault.length}</span>}
+  </button>
+  <button className="settings-btn" onClick={() => setShowSettings(true)} title="Settings">
+  <Settings size={14} />
+</button>
+</nav>
       </header>
 
       <main className="app-main">
@@ -221,7 +250,14 @@ export default function App() {
             <Vault ideas={vault} onRemove={handleRemove} />
           </div>
         )}
-      </main>
+     </main>
+
+      {showSettings && (
+        <SettingsModal
+          onClose={() => setShowSettings(false)}
+          onLogout={() => { handleLogout(); setShowSettings(false); }}
+        />
+      )}
     </div>
   );
 }
