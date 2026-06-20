@@ -11,7 +11,7 @@ Respond with ONLY valid JSON, no markdown, no commentary:
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "METHOD_NOT_ALLOWED" });
 
-  const rateLimitResult = await checkRateLimit(req);
+  const rateLimitResult = await checkUserRateLimit(req, "fusion", 5);
   if (!rateLimitResult.allowed) {
     return res.status(429).json({ error: "DAILY_LIMIT_REACHED", remaining: 0 });
   }
