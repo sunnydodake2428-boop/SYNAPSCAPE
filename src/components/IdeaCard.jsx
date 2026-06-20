@@ -37,6 +37,7 @@ export default function IdeaCard({ idea, onSave, onDiscard, onRemix, isRemixing,
     // ...rest of your JSX stays exactly the same from here down
 
   
+    
     <motion.div
       className="idea-card"
       style={{ x, rotate }}
