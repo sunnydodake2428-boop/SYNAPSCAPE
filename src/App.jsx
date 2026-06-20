@@ -9,7 +9,7 @@ import KeywordSuggester from "./components/KeywordSuggester";
 import UsageBadge from "./components/UsageBadge";
 import DailySpark from "./components/DailySpark";
 import { fuseIdeas, suggestKeywords, suggestPartnerKeywords, remixKeyword, runGauntlet } from "./lib/groqClient";
-import { getVault, saveToVault, removeFromVault } from "./lib/vault";
+import { getVault, saveToVault, removeFromVault } from "./lib/vaultDb";
 import "./App.css";
 import SettingsModal from "./components/SettingsModal";
 import { Sparkles, Archive, Settings } from "lucide-react";

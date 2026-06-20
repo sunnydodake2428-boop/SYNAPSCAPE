@@ -1,4 +1,5 @@
-import { checkRateLimit, safeParse, clamp } from "./_rateLimit.js";
+import { checkUserRateLimit } from "./_supabase.js";
+import { safeParse, clamp } from "./_rateLimit.js";
 
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const MODEL = "llama-3.3-70b-versatile";

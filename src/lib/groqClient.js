@@ -1,7 +1,15 @@
+import { supabase } from "./supabaseClient";
+
 async function callApi(endpoint, body) {
+  const { data: { session } } = await supabase.auth.getSession();
+  const token = session?.access_token;
+
   const res = await fetch(`/api/${endpoint}`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
     body: JSON.stringify(body),
   });
 
@@ -10,10 +18,7 @@ async function callApi(endpoint, body) {
     err.remaining = 0;
     throw err;
   }
-  if (!res.ok) {
-    throw new Error("SERVER_ERROR");
-  }
-
+  if (!res.ok) throw new Error("SERVER_ERROR");
   return res.json();
 }
 
