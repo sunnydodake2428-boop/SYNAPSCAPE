@@ -1,36 +1,29 @@
 import { motion, useMotionValue, useTransform } from "framer-motion";
-import { Check, X, Lightbulb, RefreshCw } from "lucide-react";
+import { Check, X, Lightbulb, RefreshCw, Share2 } from "lucide-react";
 import Gauntlet from "./Gauntlet";
 import "./IdeaCard.css";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import ShareCard from "./ShareCard";
 import { shareIdeaAsImage } from "../lib/shareImage";
-import { useState } from "react";
-
-
-
-
-
-const shareCardRef = useRef(null);
-const [sharing, setSharing] = useState(false);
-
-async function handleShare() {
-  setSharing(true);
-  try {
-    await shareIdeaAsImage(shareCardRef.current, idea);
-  } catch (err) {
-    console.error(err);
-  } finally {
-    setSharing(false);
-  }
-}
-
 
 export default function IdeaCard({ idea, onSave, onDiscard, onRemix, isRemixing, onRunGauntlet, gauntletResult, gauntletLoading }) {
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 0, 200], [-8, 0, 8]);
   const saveOpacity = useTransform(x, [20, 120], [0, 1]);
   const discardOpacity = useTransform(x, [-120, -20], [1, 0]);
+  const shareCardRef = useRef(null);
+  const [sharing, setSharing] = useState(false);
+
+  async function handleShare() {
+    setSharing(true);
+    try {
+      await shareIdeaAsImage(shareCardRef.current, idea);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSharing(false);
+    }
+  }
 
   function handleDragEnd(_, info) {
     if (info.offset.x > 120) {
@@ -41,6 +34,9 @@ export default function IdeaCard({ idea, onSave, onDiscard, onRemix, isRemixing,
   }
 
   return (
+    // ...rest of your JSX stays exactly the same from here down
+
+  
     <motion.div
       className="idea-card"
       style={{ x, rotate }}
@@ -134,7 +130,7 @@ export default function IdeaCard({ idea, onSave, onDiscard, onRemix, isRemixing,
       <div style={{ position: "fixed", top: -9999, left: -9999, pointerEvents: "none" }}>
         <ShareCard ref={shareCardRef} idea={idea} />
       </div>
-      
+
     </motion.div>
   );
 }
