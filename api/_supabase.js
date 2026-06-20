@@ -4,7 +4,7 @@ export async function checkUserRateLimit(req, bucket, limit) {
   const token = (req.headers.authorization || "").replace("Bearer ", "");
   if (!token) return { allowed: false, remaining: 0 };
 
-  const supabase = createClient(process.env.VITE_SUPABASE_URL, process.env.VITE_SUPABASE_ANON_KEY, {
+  const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY, {
     global: { headers: { Authorization: `Bearer ${token}` } },
   });
 
