@@ -236,11 +236,13 @@ if (session === undefined) {
   <button className="settings-btn" onClick={() => setShowSettings(true)} title="Settings">
   <Settings size={14} />
 </button>
-</nav>
-
 <button className="settings-btn" onClick={handleOpenHistory} title="History">
   <History size={16} />
 </button>
+
+</nav>
+
+
 
       </header>
 
