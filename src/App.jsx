@@ -16,12 +16,18 @@ import { Sparkles, Archive, Settings } from "lucide-react";
 import Login from "./components/Login";
 import { supabase } from "./lib/supabaseClient";
 
-
+import { History } from "lucide-react";
+import HistoryDrawer from "./components/HistoryDrawer";
+import { logFusion, getHistory } from "./lib/historyDb";
 
 export default function App() {
 
   const [theme, setThemeState] = useState("dark");
-  const [session, setSession] = useState(undefined);
+  
+  const [showHistory, setShowHistory] = useState(false);
+const [history, setHistory] = useState([]);
+
+const [session, setSession] = useState(undefined);
   const [view, setView] = useState("fuse");
   const [wordA, setWordA] = useState("");
   const [wordB, setWordB] = useState("");
@@ -83,6 +89,8 @@ function handleLogout() { supabase.auth.signOut(); }
       const { idea, remaining: rem } = await fuseIdeas(a, b, lineage);
       setCurrentIdea(idea);
       setRemaining(rem);
+      logFusion(idea);
+
     } catch (err) {
       handleApiError(err);
     } finally {
@@ -90,6 +98,20 @@ function handleLogout() { supabase.auth.signOut(); }
       setIsRemixing(null);
     }
   }
+
+  async function handleOpenHistory() {
+  setShowHistory(true);
+  const data = await getHistory();
+  setHistory(data);
+}
+
+function handleSelectHistory(item) {
+  setWordA(item.wordA);
+  setWordB(item.wordB);
+  setCurrentIdea(item);
+  setShowHistory(false);
+}
+
 
   async function handleRequestInitial() {
     setKeywordsLoading(true);
@@ -215,6 +237,11 @@ if (session === undefined) {
   <Settings size={14} />
 </button>
 </nav>
+
+<button className="settings-btn" onClick={handleOpenHistory} title="History">
+  <History size={16} />
+</button>
+
       </header>
 
       <main className="app-main">
@@ -279,8 +306,16 @@ if (session === undefined) {
         <SettingsModal
           onClose={() => setShowSettings(false)}
           onLogout={() => { handleLogout(); setShowSettings(false); }}
+          
         />
       )}
+      <HistoryDrawer
+  open={showHistory}
+  onClose={() => setShowHistory(false)}
+  history={history}
+  onSelect={handleSelectHistory}
+/>
+
     </div>
   );
 }
