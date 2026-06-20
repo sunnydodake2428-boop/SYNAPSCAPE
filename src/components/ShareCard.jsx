@@ -18,6 +18,7 @@ const ShareCard = forwardRef(function ShareCard({ idea }, ref) {
       <span className="share-pair">{idea.wordA} × {idea.wordB}</span>
       <h1 className="share-title">{idea.title}</h1>
       <p className="share-tagline">{idea.tagline}</p>
+<p className="share-description">{idea.description}</p>
 
       <div className="share-metrics">
         <ShareMetric label="Feasibility" value={idea.feasibility} color="#22D3EE" />

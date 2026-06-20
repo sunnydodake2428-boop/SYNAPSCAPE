@@ -106,3 +106,9 @@
   font-size: 18px;
   color: #5A6072;
 }
+.share-description {
+  font-size: 22px;
+  color: #8B92A5;
+  line-height: 1.6;
+  margin: -36px 0 56px;
+}
