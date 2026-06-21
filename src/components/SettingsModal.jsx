@@ -1,13 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { X, LogOut, Mail, ChevronRight, ArrowLeft, } from "lucide-react";
+import { X, LogOut, Mail, ChevronRight, ArrowLeft } from "lucide-react";
 import "./SettingsModal.css";
+import { supabase } from "../lib/supabaseClient";
 
-
-
-
-
-const SUPPORT_EMAIL = "sunnydodake2428@gmail.com"; // <-- replace with your real email
+const SUPPORT_EMAIL = "sunnydodake2428@gmail.com";
 const LINKEDIN_URL = "https://www.linkedin.com/in/sanmay-dodake-a705a1342";
 const ISSUE_OPTIONS = [
   { label: "Fusion isn't generating ideas", subject: "SynapseScape — Fusion not working" },
@@ -18,8 +15,13 @@ const ISSUE_OPTIONS = [
 ];
 
 export default function SettingsModal({ onClose, onLogout }) {
-  const [view, setView] = useState("main"); // "main" | "help"
+  const [view, setView] = useState("main");
   const [customIssue, setCustomIssue] = useState("");
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+  }, []);
 
   function openMail(subject, body = "") {
     const mailto = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -52,17 +54,34 @@ export default function SettingsModal({ onClose, onLogout }) {
         </div>
 
         {view === "main" ? (
-          <div className="settings-list">
-            <button className="settings-row" onClick={() => setView("help")}>
-              <Mail size={16} />
-              <span>Help & Support</span>
-              <ChevronRight size={14} className="row-chevron" />
-            </button>
-            <button className="settings-row danger" onClick={onLogout}>
-              <LogOut size={16} />
-              <span>Sign out</span>
-            </button>
-          </div>
+          <>
+            {user && (
+              <div className="account-card">
+                {user.user_metadata?.avatar_url ? (
+                  <img src={user.user_metadata.avatar_url} alt="" className="account-avatar" />
+                ) : (
+                  <div className="account-avatar-fallback">
+                    {(user.user_metadata?.full_name || user.email || "?")[0].toUpperCase()}
+                  </div>
+                )}
+                <div className="account-text">
+                  <span className="account-name">{user.user_metadata?.full_name || "Account"}</span>
+                  <span className="account-email">{user.email}</span>
+                </div>
+              </div>
+            )}
+            <div className="settings-list">
+              <button className="settings-row" onClick={() => setView("help")}>
+                <Mail size={16} />
+                <span>Help & Support</span>
+                <ChevronRight size={14} className="row-chevron" />
+              </button>
+              <button className="settings-row danger" onClick={onLogout}>
+                <LogOut size={16} />
+                <span>Sign out</span>
+              </button>
+            </div>
+          </>
         ) : (
           <div className="help-list">
             {ISSUE_OPTIONS.slice(0, 4).map((opt) => (
@@ -87,36 +106,32 @@ export default function SettingsModal({ onClose, onLogout }) {
           </div>
         )}
 
-       <div className="credit-chip">
-  <div className="credit-identity">
-    <div className="credit-avatar">S</div>
-    <div className="credit-text">
-      <span className="credit-name">SanmayOne</span>
-      <span className="credit-role">Developer</span>
-    </div>
-  </div>
-  <div className="credit-links">
-    <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" title="LinkedIn">
-      <LinkedinIcon />
-    </a>
-    <a href={`mailto:${SUPPORT_EMAIL}`} title="Email">
-      <Mail size={13} />
-    </a>
-  </div>
-</div>
-
-
+        <div className="credit-chip">
+          <div className="credit-identity">
+            <div className="credit-avatar">S</div>
+            <div className="credit-text">
+              <span className="credit-name">SanmayOne</span>
+              <span className="credit-role">Developer</span>
+            </div>
+          </div>
+          <div className="credit-links">
+            <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" title="LinkedIn">
+              <LinkedinIcon />
+            </a>
+            <a href={`mailto:${SUPPORT_EMAIL}`} title="Email">
+              <Mail size={13} />
+            </a>
+          </div>
+        </div>
       </motion.div>
     </div>
   );
+}
 
-
-  function LinkedinIcon() {
+function LinkedinIcon() {
   return (
     <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
       <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/>
     </svg>
   );
-}
-
 }
