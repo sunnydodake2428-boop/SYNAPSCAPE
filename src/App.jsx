@@ -15,7 +15,7 @@ import SettingsModal from "./components/SettingsModal";
 import { Sparkles, Archive, Settings } from "lucide-react";
 import Login from "./components/Login";
 import { supabase } from "./lib/supabaseClient";
-
+import StatsView from "./components/StatsView";
 import { History } from "lucide-react";
 import HistoryDrawer from "./components/HistoryDrawer";
 import { logFusion, getHistory } from "./lib/historyDb";
@@ -231,6 +231,8 @@ if (session === undefined) {
   <button className={view === "vault" ? "active" : ""} onClick={() => setView("vault")}>
     <Archive size={14} /> Vault {vault.length > 0 && <span className="vault-count">{vault.length}</span>}
   </button>
+  <button className={view === "stats" ? "active" : ""} onClick={() => setView("stats")}>Stats</button>
+
   <button className="theme-toggle" onClick={handleToggleTheme} title="Toggle theme">
     {theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
   </button>
@@ -295,10 +297,15 @@ if (session === undefined) {
               </AnimatePresence>
             </div>
           </div>
-        ) : (
+        ) : view === "vault" ? (
           <div className="vault-view">
             <h1>Idea Vault</h1>
             <Vault ideas={vault} onRemove={handleRemove} />
+          </div>
+        ) : (
+          <div className="vault-view">
+            <h1>Your Stats</h1>
+            <StatsView />
           </div>
         )}
      </main>
